@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin page</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div>
+
+
+    <div class="content">
+        <h1>Welcome to the Admin Page</h1>
+        <p>Here you can manage students, courses, and more.</p>
+
+        
+        
+        <div class="sidebar">
+          <h2>Admin Actions</h2>
+        <ul>
+            <li onclick="admintableshow()"><a href="#">Check Student List</a></li>
+            <!-- <li><a href="addstudent.html">Add New Student</a></li>             
+            <li><a href="viewcourses.html">View Courses</a></li> -->
+            <!-- <li onclick="activeusersshow()"><a href="#">active users</a></li> -->
+            <li onclick="logoutshow()"><a href="#">Logout</a></li>
+          </ul>
+        </div>
+        
+      </div>
+
+     
+    <div class="admintablecontainer" style="display: none">
+  <h2 style="text-align:center;">Student List</h2>
+ 
+  <select name="status" id="activeusers">
+    <option value="all">All Students</option>
+    <option value="active">Active Students</option>
+    <option value="inactive">Inactive Students</option>
+  </select>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Father Name</th>
+        <th>Age</th>
+        <th>Roll Number</th>
+        <th>CNIC</th>
+        <th>Status</th>
+        <th>Actions</th>
+        <th>Delete</th>
+          
+      </tr>
+    </thead>
+    <tbody id="adminStudentList">
+        
+      <!-- JS will populate this -->
+    </tbody>
+  </table>
+</div>
+    </div>
+
+
+    
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Form </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 style="text-align:center;">Saylani Student Registration Form</h1>
+  <p style="text-align:center;">Welcome to the Saylani Student Registration Form.
+    <h2 style="text-align:center; margin: 20px;">Student Registration Form</h2>
+
+  <form id="studentForm">
+    <label for="studentName">Student Name:</label>
+    <input type="text" id="studentName" name="studentName" placeholder="Enter your name" required>
+
+    <label for="fatherName">Father Name:</label>
+    <input type="text" id="fatherName" name="fatherName" placeholder="Enter your father name" required>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" min="1" placeholder="Enter your age" required>
+    
+
+     <label for="cnic">CNIC:</label>
+    <input type="text" id="cnic" name="cnic" placeholder="Enter your CNIC"  required>
+
+       <label for="phone">Phone:</label>
+    <input type="number" id="phone" name="phone" placeholder="Enter your phone"  required>
+    
+
+    <label for="address">Address:</label>
+    <textarea id="address" name="address" rows="5" cols="53" placeholder="Enter your address" required></textarea>
+    
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" required>
+      <option value="">Select Gender</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+         
+    <label for="Course">Course:</label>
+    <select id="Course" name="Course" required>
+      <option value="">Select Course</option>
+      <option value="HTML">HTML</option>
+      <option value="CSS">CSS</option>
+      <option value="JAVASCRIPT">JAVASCRIPT</option>
+    </select>
+
+
+    <P id="roll"></P>
+
+
+
+
+    <button type="submit">Submit</button>
+    <button><a href="check.html">Check</a>  </button>
+  </form>
+
+
+ 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
