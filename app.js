@@ -163,14 +163,7 @@ if (adminLoginForm) {
   
 }
 
-window.addEventListener("load", async function () {
-    
-      const { data: { session } } = await client.auth.getSession();
-    
-        if (!session && window.location.pathname !== "/adminlogin.html") {
-            window.location.pathname = "/adminlogin.html"; 
-        }
-})
+
 
 
 // ------------------------ Admin Table Function -----------------------
@@ -336,3 +329,11 @@ activeusers.addEventListener('change', async function() {
 
 // --------------------- Logout Function ridirect-------------------------
 
+// window.onload = async function () {
+    
+//       const { data: { session } } = await client.auth.getSession();
+    
+//         if (!session && window.location.pathname !== "/adminlogin.html") {
+//             window.location.pathname = "/adminlogin.html"; 
+//         }
+//     }
