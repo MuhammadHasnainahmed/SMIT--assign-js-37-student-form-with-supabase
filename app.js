@@ -132,6 +132,8 @@ if (adminLoginForm) {
     let adminemailValue = adminemail.value;
     let adminPasswordValue = adminpassword.value;
 
+      
+
     console.log(
       "Admin Name:",
       adminemailValue + ", Admin Password:",
@@ -157,7 +159,19 @@ if (adminLoginForm) {
       window.location.href = "admin.html";
     }
   });
+
+  
 }
+
+window.addEventListener("load", async function () {
+    
+      const { data: { session } } = await client.auth.getSession();
+    
+        if (!session && window.location.pathname !== "/adminlogin.html") {
+            window.location.pathname = "/adminlogin.html"; 
+        }
+})
+
 
 // ------------------------ Admin Table Function -----------------------
 async function admintableshow() {
@@ -321,10 +335,4 @@ activeusers.addEventListener('change', async function() {
 
 
 // --------------------- Logout Function ridirect-------------------------
-async function checkLogin() {
-    const { data: { session } } = await client.auth.getSession();
-    if (!session && window.location.pathname !== "/adminlogin.html") {
-        window.location.pathname = "/adminlogin.html";
-    }
-}
-window.onload = checkLogin;
+
