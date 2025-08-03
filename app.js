@@ -321,11 +321,10 @@ activeusers.addEventListener('change', async function() {
 
 
 // --------------------- Logout Function ridirect-------------------------
-window.onload = async function () {
+async function checkLogin() {
     const { data: { session } } = await client.auth.getSession();
-
     if (!session && window.location.pathname !== "/adminlogin.html") {
-        window.location.pathname = "/adminlogin.html"; 
+        window.location.pathname = "/adminlogin.html";
     }
 }
-
+window.onload = checkLogin;
