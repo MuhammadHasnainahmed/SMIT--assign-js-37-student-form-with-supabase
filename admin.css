@@ -190,6 +190,40 @@ td select {
     .content p{
       text-align: center;
     }
+
+
+    .action_buttons{
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      margin-top: 20px;
+    }
+
+    .action_buttons button{
+      padding: 10px 20px;
+      border-radius: 6px;
+      width: 20%;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    .action_buttons button:hover{
+      background-color: #0056b3;
+    }
+
+    .action_buttons select{
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      width: 20%;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
       
     
 

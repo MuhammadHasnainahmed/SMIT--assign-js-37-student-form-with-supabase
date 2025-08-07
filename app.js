@@ -18,6 +18,15 @@ let adminpassword = document.getElementById("password");
 let admintablecontainer = document.querySelector(".admintablecontainer");
 let adminStudentList = document.getElementById("adminStudentList");
 
+
+let downloadReport = document.getElementById("downloadReport");
+
+
+
+// let profilepicture = document.getElementById('file');
+
+
+
 let rollnumber = Math.floor(Math.random() * 1000000)
   .toString()
   .padStart(6, "0");
@@ -28,9 +37,32 @@ let rollnumber = Math.floor(Math.random() * 1000000)
 // ------------------------ student form ----------------------
 if (form) {
   roll.textContent = `your roll number is: ${rollnumber}`;
-  let alldata = [];
+  
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
+
+   
+    let file = document.getElementById("file").files[0];
+    let filename = file.name;
+
+    // console.log(file , filename);
+
+const { data:imagedata, error:imageerror } = await client
+  .storage
+  .from('profileimg')
+  .upload(`public/${filename}`, file, {
+    cacheControl: '3600',
+    upsert: false
+  })
+
+  if (imageerror) {
+    console.log("Error uploading image:", imageerror);
+  } else {
+    console.log("Image uploaded successfully:", imagedata);
+    
+  }
+    
+
 
     let studentData = {
       name: document.getElementById("studentName").value,
@@ -42,6 +74,7 @@ if (form) {
       course: document.getElementById("Course").value,
       address: document.getElementById("address").value,
       phone: document.getElementById("phone").value,
+      image:  filename           
     };
 
     if (
@@ -53,19 +86,20 @@ if (form) {
       !studentData.gender ||
       !studentData.course ||
       !studentData.address ||
-      !studentData.phone
+      !studentData.phone||
+      !studentData.image
     ) {
-      alert("Please fill in all fields.");
+      toastr.error('Please fill in all fields.');
       return;
     }
 
-    if (studentData.cnic.length !== 13) {
-      alert("CNIC must be 13 digits long.");
+    if (studentData.cnic.length !== 13 || !/^\d+$/.test(studentData.cnic)) {
+      toastr.error('CNIC number must be 13 digits long.');
       return;
     }
 
-    if (studentData.phone.length !== 11) {
-      alert("Phone number must be 11 digits long.");
+    if (studentData.phone.length !== 11 || !/^\d+$/.test(studentData.phone)) {
+      toastr.error('Phone number must be 11 digits long.');
       return;
     }
 
@@ -75,10 +109,10 @@ if (form) {
       .select("*");
 
     if (error) {
-      console.log(error.message);
+     toastr.error('Error inserting data:', error.message);
     } else {
       console.log("Data inserted successfully:", data);
-      alert("Data inserted successfully");
+     toastr.success('Data inserted successfully.');
       form.reset();
     }
   });
@@ -90,6 +124,16 @@ if (searchButton) {
     event.preventDefault();
     let checkcnic = document.getElementById("searchInput").value;
     console.log("Searching for CNIC Number:", checkcnic);
+        
+  //   const { data:showimage } = client
+  // .storage
+  // .from('profileimg')
+  // .getPublicUrl('public/' + checkcnic)
+
+  // let imageUrl = showimage.publicUrl
+  // console.log(imageUrl);
+  
+
 
     const { data, error } = await client
       .from("student_form")
@@ -97,7 +141,7 @@ if (searchButton) {
       .eq("cnic", checkcnic);
 
     if (error) {
-      console.log("Error fetching data:", error.message);
+      toastr.error('Error fetching data:', error.message);
     } else {
       console.log("Data fetched successfully:", data);
       tablecontainer.style.display = "block";
@@ -105,6 +149,7 @@ if (searchButton) {
       for (let i = 0; i < data.length; i++) {
         studentList.innerHTML = `
         <tr>
+        <td><img src="" alt="Profile Image" width="50" height="50"/></td>
         <td>${
           data[i].name.charAt(0).toUpperCase() +
           data[i].name.slice(1).toLowerCase()
@@ -141,7 +186,7 @@ if (adminLoginForm) {
     );
 
     if (adminemailValue === "" || adminPasswordValue === "") {
-      alert("Please fill in all fields.");
+      toastr.error('');
       return;
     }
 
@@ -152,11 +197,14 @@ if (adminLoginForm) {
 
     if (error) {
       console.log("Error logging in:", error.message);
-      alert("Login failed. Please check your credentials.");
+      toastr.error('Login failed. Please check your credentials.');
     } else {
       console.log("Login successful:", data);
-      alert("Login successful");
-      window.location.href = "admin.html";
+ toastr.success('Login successful.');
+ setTimeout(() => {
+  
+   window.location.href = "admin.html";
+ }, 1000);
     }
   });
 
@@ -173,7 +221,7 @@ async function admintableshow() {
   const { data, error } = await client.from("student_form").select("*");
 
   if (error) {
-    console.log("Error fetching data:", error.message);
+    toastr.error('Something went wrong!');
   } else {
     console.log("Data fetched successfully:", data);
     adminStudentList.innerHTML = "";
@@ -204,6 +252,8 @@ async function admintableshow() {
   <td><button class="delete-button" onclick="deleteRow('${
     data[i].roll
   }')">Delete</button></td>
+
+  <td><button class="edit-button" onclick="editRow('${data[i].roll}')">Edit</button></td>
         </tr>
         `;
     }
@@ -216,11 +266,14 @@ async function logoutshow() {
 
   if (error) {
     console.log("Error logging out:", error.message);
-    alert("Logout failed. Please try again.");
+   toastr.error('Error logging out:', error.message);
   } else {
     console.log("Logout successful");
-    alert("Logout successful");
-    window.location.href = "adminlogin.html";
+ toastr.success('Logout successful.');
+ setTimeout(() => {
+  
+   window.location.href = "adminlogin.html";
+ }, 1000);
   }
 }
 
@@ -234,9 +287,10 @@ async function updateStatus(roll, status) {
     .eq("roll", roll);
   if (error) {
     console.log("Error updating status:", error.message);
+    toastr.error('Error updating status:', error.message);
   } else {
     console.log("Status updated successfully for roll:", roll);
-    alert("Status updated successfully");
+  toastr.success('Message sent successfully!');
   }
 
   admintableshow();
@@ -249,15 +303,62 @@ async function deleteRow(id) {
   const { error } = await client.from("student_form").delete().eq("roll", id);
 
   if (error) {
-    console.log("Error deleting row:", error.message);
+    toastr.error('Error deleting row:', error.message);
   } else {
     console.log("Row deleted successfully with ID:", id);
     if (row) {
       row.remove();
-      alert("Row deleted successfully");
+      toastr.success('Row deleted successfully!');
     }
   }
 }
+
+// -----------------------Edit Row Function -----------------------
+async function editRow(id) {
+  console.log("Editing row with ID:", id);
+
+  let row = document.getElementById(`row-${id}`);
+  let tds = row.getElementsByTagName('td');
+  let editbutton = row.querySelector('.edit-button');
+
+  if (editbutton.textContent === 'Edit') {
+
+    let name = tds[0].innerText;
+    let fathername = tds[1].innerText;
+    let age = tds[2].innerText;
+    let cnic = tds[4].innerText;
+
+    tds[0].innerHTML = `<input type="text" id="name-${id}" value="${name}">`;
+    tds[1].innerHTML = `<input type="text" id="fathername-${id}" value="${fathername}">`;
+    tds[2].innerHTML = `<input type="number" id="age-${id}" value="${age}">`;
+    tds[4].innerHTML = `<input type="text" id="cnic-${id}" value="${cnic}">`;
+
+    editbutton.textContent = 'Update';
+  } else {
+ 
+    const { error } = await client
+      .from('student_form')
+      .update({
+        name: document.getElementById(`name-${id}`).value,
+        fatherName: document.getElementById(`fathername-${id}`).value,
+        age: document.getElementById(`age-${id}`).value,
+        cnic: document.getElementById(`cnic-${id}`).value
+      })
+      .eq('roll', id)
+
+    editbutton.textContent = 'Edit';
+
+    if (error) {
+      // console.log("Error updating row:", error.message);
+      toastr.error('Update failed:', error.message);
+    } else {
+      // console.log("Row updated successfully with ID:", id);
+      toastr.success('data updated successfully!');
+      admintableshow(); 
+    }
+  }
+}
+
 
 
 
@@ -316,6 +417,8 @@ activeusers.addEventListener('change', async function() {
     </select>
     </td>
     <td><button class="delete-button" onclick="deleteRow('${data[i].roll}')">Delete</button></td>
+  <td><button class="edit-button" onclick="editRow('${data[i].roll}')">Edit</button></td>
+
         </tr>
     `            
         }
@@ -328,12 +431,30 @@ activeusers.addEventListener('change', async function() {
 
 
 // --------------------- Logout Function ridirect-------------------------
+async function redirect() {
+  const { data: { session }, error } = await client.auth.getSession();
 
-// window.onload = async function () {
+  if (!session) {
+    if (window.location.pathname.includes("admin.html")) {
+      window.location.href = "adminlogin.html";
+    }
+  }else{
+    console.log(error);
     
-//       const { data: { session } } = await client.auth.getSession();
-    
-//         if (!session && window.location.pathname !== "/adminlogin.html") {
-//             window.location.pathname = "/adminlogin.html"; 
-//         }
-//     }
+  }
+}
+redirect();
+
+
+// ------------------------ Download Report -----------------------
+
+downloadReport.addEventListener('click', async function() {
+ console.log( "Download Report button clicked");
+
+ let table = document.getElementById('adminTable')
+
+ let workbook = XLSX.utils.table_to_book(table, { sheet: "student Data" });
+  XLSX.writeFile(workbook, "admin_table.xlsx");
+  
+
+})

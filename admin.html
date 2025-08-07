@@ -31,15 +31,22 @@
 
      
     <div class="admintablecontainer" style="display: none">
-  <h2 style="text-align:center;">Student List</h2>
- 
-  <select name="status" id="activeusers">
-    <option value="all">All Students</option>
-    <option value="active">Active Students</option>
-    <option value="inactive">Inactive Students</option>
-  </select>
 
-  <table>
+      <h2 style="text-align:center;">Student List</h2>
+      <div class="action_buttons">
+
+        
+          <button id="downloadReport">Download Report</button>
+         
+          <select name="status" id="activeusers">
+            <option value="all">All Students</option>
+            <option value="active">Active Students</option>
+            <option value="inactive">Inactive Students</option>
+          </select>
+
+      </div>
+
+  <table id="adminTable">
     <thead>
       <tr>
         <th>Student Name</th>
@@ -50,6 +57,7 @@
         <th>Status</th>
         <th>Actions</th>
         <th>Delete</th>
+        <th>Edit</th>
           
       </tr>
     </thead>
@@ -62,6 +70,12 @@
     </div>
 
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
