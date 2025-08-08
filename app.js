@@ -125,14 +125,8 @@ if (searchButton) {
     let checkcnic = document.getElementById("searchInput").value;
     console.log("Searching for CNIC Number:", checkcnic);
         
-  //   const { data:showimage } = client
-  // .storage
-  // .from('profileimg')
-  // .getPublicUrl('public/' + checkcnic)
 
-  // let imageUrl = showimage.publicUrl
-  // console.log(imageUrl);
-  
+
 
 
     const { data, error } = await client
@@ -147,9 +141,19 @@ if (searchButton) {
       tablecontainer.style.display = "block";
       studentList.innerHTML = "";
       for (let i = 0; i < data.length; i++) {
+
+        const imageFilename = data[i].image;
+        console.log(imageFilename);
+        
+
+    const { data: imageUrlData } = client.storage
+      .from('profileimg')
+      .getPublicUrl(`public/${imageFilename}`);
+
+
         studentList.innerHTML = `
         <tr>
-        <td><img src="" alt="Profile Image" width="50" height="50"/></td>
+        <td><img src=${imageUrlData.publicUrl} alt="Profile Image" width="50" height="50"/></td>
         <td>${
           data[i].name.charAt(0).toUpperCase() +
           data[i].name.slice(1).toLowerCase()
