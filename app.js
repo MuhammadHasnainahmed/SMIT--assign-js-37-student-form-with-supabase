@@ -206,7 +206,7 @@ function downloadbuttoncelhtml(status , roll) {
     return ` <span>Your id card is inactive</span>`
     
   }else {
-    return ` <span>Download Id Card</span>`
+    return ` <span>your id card is pending</span>`
   }
 }
 
