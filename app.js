@@ -20,6 +20,7 @@ let adminStudentList = document.getElementById("adminStudentList");
 
 
 let downloadReport = document.getElementById("downloadReport");
+let downloadButton = document.getElementById('downloadButton')
 
 
 
@@ -119,13 +120,16 @@ const { data:imagedata, error:imageerror } = await client
 }
 
 // ---------------------chcek cnic search -----------------------
+
+
 if (searchButton) {
   searchButton.addEventListener("click", async function (event) {
     event.preventDefault();
     let checkcnic = document.getElementById("searchInput").value;
     console.log("Searching for CNIC Number:", checkcnic);
-        
 
+    // downloadButton.style.display = "none";
+        
 
 
 
@@ -133,12 +137,24 @@ if (searchButton) {
       .from("student_form")
       .select()
       .eq("cnic", checkcnic);
+ 
+        if (data.length === 0) {
+        toastr.error('No data found for the provided CNIC number.');
+        return
+      }
 
     if (error) {
       toastr.error('Error fetching data:', error.message);
     } else {
       console.log("Data fetched successfully:", data);
       tablecontainer.style.display = "block";
+
+      // downloadButton.style.display = "none";
+  
+
+
+
+    
       studentList.innerHTML = "";
       for (let i = 0; i < data.length; i++) {
 
@@ -153,7 +169,7 @@ if (searchButton) {
 
         studentList.innerHTML = `
         <tr>
-        <td><img src=${imageUrlData.publicUrl} alt="Profile Image" width="50" height="50"/></td>
+        <td ><img src=${imageUrlData.publicUrl} class="profile-image" alt="Profile Image" width="50"  height="50" /></td>
         <td>${
           data[i].name.charAt(0).toUpperCase() +
           data[i].name.slice(1).toLowerCase()
@@ -166,12 +182,109 @@ if (searchButton) {
         <td>${data[i].roll}</td>
         <td>${data[i].cnic}</td>
         <td>${data[i].status}</td>
+        <td>
+        ${downloadbuttoncelhtml(data[i].status , data[i].roll)}
+        </td>
+       
         </tr>
         `;
       }
     }
   });
 }
+
+
+
+// ----------------------DOWONLOAD BUTTON CREATE ----------------------
+
+function downloadbuttoncelhtml(status , roll) {
+  if (status === 'active' ) {
+    // console.log(roll);
+   return ` <button onclick="downloadIdCard('${roll}')" >Download Id Card</button> `
+   
+  }else if (status === 'inactive') {
+    return ` <span>Your id card is inactive</span>`
+    
+  }else {
+    return ` <span>Download Id Card</span>`
+  }
+}
+
+
+// ------------------------Download Id Card -----------------------
+
+async function downloadIdCard(roll) {
+  const { jsPDF } = window.jspdf;
+
+  const { data, error } = await client
+    .from("student_form")
+    .select("*")
+    .eq("roll", roll);
+
+  if (error) {
+    toastr.error("Error fetching data:", error.message);
+    return;
+  }
+
+  const student = data[0];
+  const doc = new jsPDF("p", "mm", [85, 130]); // ID card size
+
+  // Colors
+  const lightGreen = "#a8e6a1";
+  const darkBlue = "#003366";
+
+  // Background
+  doc.setFillColor(lightGreen);
+  doc.rect(0, 0, 85, 130, "F");
+
+  // Header
+  doc.setFillColor(darkBlue);
+  doc.rect(0, 0, 85, 20, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.text("SMIT MASS IT TRAINING", 42.5, 12, { align: "center" });
+
+    const imageFilename = student.image;
+  const { data: imageUrlData } = client.storage
+    .from("profileimg")
+    .getPublicUrl(`public/${imageFilename}`);
+  doc.addImage(imageUrlData.publicUrl, "PNG", 27.5, 25, 30, 30);
+
+  // Student details
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(8);
+  let y = 65;
+  const gap = 6;
+
+  function addDetail(label, value) {
+    doc.setFont("helvetica", "bold");
+    doc.text(`${label}:`, 10, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(`${value || ""}`, 30, y);
+    y += gap;
+  }
+
+  addDetail("Name", student.name);
+  addDetail("Father", student.fatherName);
+  addDetail("Age", student.age);
+  addDetail("Roll No", student.roll);
+  addDetail("CNIC", student.cnic);
+  addDetail("Status", student.status);
+
+  // Footer contact strip
+  doc.setFillColor(darkBlue);
+  doc.rect(0, 120, 85, 10, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(8);
+  doc.text("Contact: 0300-0000000", 42.5, 126, { align: "center" });
+
+  // Save PDF
+  doc.save(`student_${roll}.pdf`);
+}
+
+
+
 
 // -------------------------admin login------------------
 
@@ -190,7 +303,7 @@ if (adminLoginForm) {
     );
 
     if (adminemailValue === "" || adminPasswordValue === "") {
-      toastr.error('');
+      toastr.error('Please fill in all fields.');
       return;
     }
 
