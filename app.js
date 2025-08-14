@@ -388,7 +388,11 @@ async function admintableshow() {
     data[i].roll
   }')">Delete</button></td>
 
+  
+
   <td><button class="edit-button" onclick="editRow('${data[i].roll}')">Edit</button></td>
+
+  
         </tr>
         `;
     }
@@ -599,6 +603,8 @@ downloadReport.addEventListener('click', async function() {
 searchInput.addEventListener('input' , async function () {
   console.log("Search input changed:", searchInput.value);
   let filtervalue = searchInput.value;
+  console.log("Filter value:", filtervalue);
+  
    const { data, error } = await client.from("student_form").select("*");
   
    let filterdata = data.filter(function (item) {

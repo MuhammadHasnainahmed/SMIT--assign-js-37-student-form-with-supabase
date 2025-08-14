@@ -1,0 +1,173 @@
+   body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Content Header */
+    
+    .content{
+        margin: 30px;
+        background: #3498db;
+        padding: 30px;
+        /* border-bottom-left-radius: 70px;
+        border-bottom-right-radius: 70px; */
+           border-radius: 100px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        /* position: sticky;
+        top: 0;
+        left: 0;
+        right: 0; */
+
+    }
+
+    .content-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: white;
+    }
+    .content-header p {
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    .logput-button li {
+        list-style: none;
+        background-color: #c0392b;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .logput-button li:hover {
+        background-color: #e74c3c;
+    }
+    
+    
+    .logput-button a{
+        color: white;
+        text-decoration: none;
+
+    }
+
+    
+
+    /* Dashboard Stats */
+    .dashboard {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+    }
+    .dashboard div {
+        flex: 1;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+    .dashboard div:hover {
+        transform: translateY(-5px);
+    }
+    .dashboard h3 { margin-bottom: 10px; }
+    .dashboard p {
+        font-size: 24px;
+        font-weight: bold;
+        color: #3498db;
+    }
+
+    /* Table Container */
+    .admintablecontainer {
+        margin: 20px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .admintablecontainer h2 {
+        margin-bottom: 20px;
+    }
+
+    /* Action Buttons */
+    .action_buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .action_buttons button, .action_buttons select, .action_buttons input {
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    .action_buttons button {
+        background: #3498db;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .action_buttons button:hover {
+        background: #2980b9;
+    }
+    .action_buttons input {
+        flex: 1;
+    }
+
+    #searchInput{
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    /* Table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+    }
+    th {
+        background: #f4f6f8;
+    }
+    tr:hover {
+        background: #f9f9f9;
+    }
+  
+    .delete-button{
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .delete-button:hover {
+        background: #c0392b;
+    }
+
+    .edit-button{
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background: #3498db;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .edit-button:hover {
+        background: #2980b9;
+    }

@@ -4,90 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>admin page</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="admindashb.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div>
+   <div class="content">
+    <div class="content-header">
+        <h1>Dashboard</h1>
+        <p>Welcome to the admin dashboard</p>
+      </div>
+      <div class="logput-button">
 
-
-    <div class="content">
-        <h1>Welcome to the Admin Page</h1>
-        <p>Here you can manage students, courses, and more.</p>
-
-        
-        
-        <div class="sidebar">
-          <h2>Admin Actions</h2>
         <ul>
-            <!-- <li ><a href="#">Check Student List</a></li> -->
-            <!-- <li><a href="addstudent.html">Add New Student</a></li>             
-            <li><a href="viewcourses.html">View Courses</a></li> -->
-            <!-- <li onclick="activeusersshow()"><a href="#">active users</a></li> -->
-            <li onclick="logoutshow()"><a href="#">Logout</a></li>
-          </ul>
-        </div>
-        
+            <li onclick="logoutshow()"><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
       </div>
-
-
-      <div class="dashboard">  
-        <div id="howmanystudent" >
-          <h3>Students</h3>
-          <p id="studentcount">1</p>
-      </div>
-
-      <div id="howmanyactive">
-           <h3>Active Students</h3>
-           <p id="activecount">1</p>
-      </div>
-
-      <div id="howmanyadmin">
-        <h3>Total Admin</h3>
-        <p id="admincount">1</p>
-      </div>
-      
-    </div>
-     
-    <div class="admintablecontainer" >
-
-      <h2 style="text-align:center;">Student List</h2>
-      <div class="action_buttons">
-
-        
-          <button id="downloadReport">Download Report</button>
-         
-          <select name="status" id="activeusers">
-            <option value="all">All Students</option>
-            <option value="active">Active Students</option>
-            <option value="inactive">Inactive Students</option>
-          </select>
-
-          <input type="text" id="searchInput" placeholder="Search by Student Name">
-
-      </div>
-
-  <table id="adminTable">
-    <thead>
-      <tr>
-        <th>Student Name</th>
-        <th>Father Name</th>
-        <th>Age</th>
-        <th>Roll Number</th>
-        <th>CNIC</th>
-        <th>Status</th>
-        <th>Actions</th>
-        <th>Delete</th>
-        <th>Edit</th>
-          
-      </tr>
-    </thead>
-    <tbody id="adminStudentList">
-        
-      <!-- JS will populate this -->
-    </tbody>
-  </table>
 </div>
+
+<div>
+
+ 
+
+    <div style="flex: 1;">
+        <div class="dashboard">  
+            <div id="howmanystudent">
+                <h3><i class="fas fa-users"></i> Students</h3>
+                <p id="studentcount">1</p>
+            </div>
+            <div id="howmanyactive">
+                <h3><i class="fas fa-user-check"></i> Active Students</h3>
+                <p id="activecount">1</p>
+            </div>
+            <div id="howmanyadmin">
+                <h3><i class="fas fa-user-tie"></i> Total Admin</h3>
+                <p id="admincount">1</p>
+            </div>
+        </div>
+
+        <div class="admintablecontainer">
+            <h2><i class="fas fa-table"></i> Student List</h2>
+            <div class="action_buttons">
+                <button id="downloadReport"><i class="fas fa-download"></i> Download Report</button>
+                <select name="status" id="activeusers">
+                    <option value="all">All Students</option>
+                    <option value="active">Active Students</option>
+                    <option value="inactive">Inactive Students</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Search by Student Name or CNIC">
+            </div>
+
+            <table id="adminTable">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Father Name</th>
+                        <th>Age</th>
+                        <th>Roll Number</th>
+                        <th>CNIC</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                        <th>Delete</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="adminStudentList">
+                    <!-- Example row -->
+                </tbody>
+            </table>
+        </div>
     </div>
+
+</div>
+
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
