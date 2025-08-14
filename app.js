@@ -17,10 +17,13 @@ let adminemail = document.getElementById("adminemail");
 let adminpassword = document.getElementById("password");
 let admintablecontainer = document.querySelector(".admintablecontainer");
 let adminStudentList = document.getElementById("adminStudentList");
-
+let studentcount = document.getElementById("studentcount");
+let activecount = document.getElementById("activecount");
+let searchInput = document.getElementById('searchInput')
 
 let downloadReport = document.getElementById("downloadReport");
 let downloadButton = document.getElementById('downloadButton')
+
 
 
 
@@ -94,6 +97,9 @@ const { data:imagedata, error:imageerror } = await client
       return;
     }
 
+            toastr.info('Authenticating...');
+
+
     if (studentData.cnic.length !== 13 || !/^\d+$/.test(studentData.cnic)) {
       toastr.error('CNIC number must be 13 digits long.');
       return;
@@ -131,6 +137,7 @@ if (searchButton) {
     // downloadButton.style.display = "none";
         
 
+            toastr.info('Authenticating...');
 
 
     const { data, error } = await client
@@ -200,13 +207,10 @@ if (searchButton) {
 function downloadbuttoncelhtml(status , roll) {
   if (status === 'active' ) {
     // console.log(roll);
-   return ` <button onclick="downloadIdCard('${roll}')" >Download Id Card</button> `
+   return ` <button onclick="downloadIdCard('${roll}')" class="search-btn" >Download Id Card</button> `
    
-  }else if (status === 'inactive') {
-    return ` <span>Your id card is inactive</span>`
-    
-  }else {
-    return ` <span>your id card is pending</span>`
+  }else{
+      return ` <span>your id card is  ${status}</span>`
   }
 }
 
@@ -307,6 +311,9 @@ if (adminLoginForm) {
       return;
     }
 
+      // Simulate login process
+            toastr.info('Authenticating...');
+
     const { data, error } = await client.auth.signInWithPassword({
       email: adminemailValue,
       password: adminPasswordValue,
@@ -333,7 +340,8 @@ if (adminLoginForm) {
 
 // ------------------------ Admin Table Function -----------------------
 async function admintableshow() {
-  admintablecontainer.style.display = "block";
+  let activecountnu = 0;
+  // admintablecontainer.style.display = "block";
 
   const { data, error } = await client.from("student_form").select("*");
 
@@ -343,6 +351,16 @@ async function admintableshow() {
     console.log("Data fetched successfully:", data);
     adminStudentList.innerHTML = "";
     for (let i = 0; i < data.length; i++) {
+      studentcount.innerHTML = data.length;
+      if (data[i].status === "active") {
+        activecountnu++;
+        
+        
+      }
+
+      activecount.innerHTML = activecountnu;
+      
+
       adminStudentList.innerHTML += `
         <tr id='row-${data[i].roll}'>
         <td>${
@@ -376,6 +394,7 @@ async function admintableshow() {
     }
   }
 }
+admintableshow()
 
 // ------------------------ Logout Function -----------------------
 async function logoutshow() {
@@ -574,4 +593,55 @@ downloadReport.addEventListener('click', async function() {
   XLSX.writeFile(workbook, "admin_table.xlsx");
   
 
+})
+
+
+searchInput.addEventListener('input' , async function () {
+  console.log("Search input changed:", searchInput.value);
+  let filtervalue = searchInput.value;
+   const { data, error } = await client.from("student_form").select("*");
+  
+   let filterdata = data.filter(function (item) {
+    return item.name.toLowerCase().includes(filtervalue.toLowerCase()) 
+    ||String(item.cnic).includes(filtervalue)
+   })
+   adminStudentList.innerHTML = ''
+
+   for (let i = 0; i < filterdata.length; i++) {
+        // console.log(filterdata[i]);
+
+        adminStudentList.innerHTML += `
+        <tr id='row-${filterdata[i].roll}'>
+        <td>${
+          filterdata[i].name.charAt(0).toUpperCase() +
+          filterdata[i].name.slice(1).toLowerCase()
+        }</td>
+        <td>${
+          filterdata[i].fatherName.charAt(0).toUpperCase() +
+          filterdata[i].fatherName.slice(1).toLowerCase()
+        }</td>
+        <td>${filterdata[i].age}</td>
+        <td>${filterdata[i].roll}</td>
+        <td>${filterdata[i].cnic}</td>
+        <td>${filterdata[i].status}</td>
+        <td class="actions-cell">
+    <select class="status-select" onchange="updateStatus('${filterdata[i].roll}', this.value)" >
+    <option value="pending" ${filterdata[i].status === "pending" ? "selected" : ""} >Pending</option>
+      <option value="active" ${filterdata[i].status === "active" ? "selected" : ""} >Active</option>
+      <option value="inactive" ${filterdata[i].status === "inactive" ? "selected" : ""}>Inactive</option>
+    </select>
+    </td>
+    <td><button class="delete-button" onclick="deleteRow('${filterdata[i].roll}')">Delete</button></td>
+  <td><button class="edit-button" onclick="editRow('${filterdata[i].roll}')">Edit</button></td>
+
+        </tr>
+    `        
+
+
+            
+   }
+
+    // console.log(filterdata);
+    
+  
 })

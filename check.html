@@ -9,34 +9,46 @@
 </head>
 <body>
     
-    <div class="search_container">
-        <p>Search by Student Name or CNIC</p>
-        <input type="number" min="0" max="11" id="searchInput" placeholder="Search by Student Name or CNIC">
-        <button id="searchButton">Search</button>
-    </div>
+   <div id="check-section" class="search-container">
+            <h2>Check Student Registration</h2>
+            <p class="description">Search for registered students by name or CNIC number</p>
+            
+            <div class="search-input-group">
+                <input type="text" id="searchInput" class="search-input" placeholder="Enter Student Name or CNIC">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            
+            <button id="searchButton" class="search-btn">
+                <i class="fas fa-search"></i> Search Student
+            </button>
+        </div>
 
-    
-    <div class="table-container" style="display: none">
-  <h2 style="text-align:center;">Student List</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Image</th>
-        <th>Student Name</th>
-        <th>Father Name</th>
-        <th>Age</th>
-        <th>Roll Number</th>
-        <th>CNIC</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
+        <div class="table-container" id="table-container">
+            <h2>Student Records</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Student Name</th>
+                        <th>Father Name</th>
+                        <th>Age</th>
+                        <th>Roll Number</th>
+                        <th>CNIC</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
     <tbody id="studentList">
         
       <!-- JS will populate this -->
     </tbody>
   </table>
 </div>
+
+<div class="footer">
+            <p>Need help? Contact our support team at <a href="mailto:support@saylani.org">support@saylani.org</a></p>
+            <p>&copy; 2023 Saylani Welfare International Trust. Empowering youth through education.</p>
+        </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
