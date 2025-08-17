@@ -19,54 +19,47 @@ let admintablecontainer = document.querySelector(".admintablecontainer");
 let adminStudentList = document.getElementById("adminStudentList");
 let studentcount = document.getElementById("studentcount");
 let activecount = document.getElementById("activecount");
-let searchInput = document.getElementById('searchInput')
+let searchInput = document.getElementById("searchInput");
 
 let downloadReport = document.getElementById("downloadReport");
-let downloadButton = document.getElementById('downloadButton')
+let downloadButton = document.getElementById("downloadButton");
 
-
-
+let openPopup = document.getElementById("openPopup");
+let updateButton = document.getElementById("updateButton");
+let loaderRow = document.getElementById("loaderRow");
+let closePopup = document.getElementById("closePopup");
 
 // let profilepicture = document.getElementById('file');
-
-
 
 let rollnumber = Math.floor(Math.random() * 1000000)
   .toString()
   .padStart(6, "0");
 // console.log("Generated Roll Number:", rollnumber);
 
-
-
 // ------------------------ student form ----------------------
 if (form) {
   roll.textContent = `your roll number is: ${rollnumber}`;
-  
+
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-   
     let file = document.getElementById("file").files[0];
     let filename = file.name;
 
     // console.log(file , filename);
 
-const { data:imagedata, error:imageerror } = await client
-  .storage
-  .from('profileimg')
-  .upload(`public/${filename}`, file, {
-    cacheControl: '3600',
-    upsert: false
-  })
+    const { data: imagedata, error: imageerror } = await client.storage
+      .from("profileimg")
+      .upload(`public/${filename}`, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
 
-  if (imageerror) {
-    console.log("Error uploading image:", imageerror);
-  } else {
-    console.log("Image uploaded successfully:", imagedata);
-    
-  }
-    
-
+    if (imageerror) {
+      console.log("Error uploading image:", imageerror);
+    } else {
+      console.log("Image uploaded successfully:", imagedata);
+    }
 
     let studentData = {
       name: document.getElementById("studentName").value,
@@ -78,7 +71,7 @@ const { data:imagedata, error:imageerror } = await client
       course: document.getElementById("Course").value,
       address: document.getElementById("address").value,
       phone: document.getElementById("phone").value,
-      image:  filename           
+      image: filename,
     };
 
     if (
@@ -90,23 +83,22 @@ const { data:imagedata, error:imageerror } = await client
       !studentData.gender ||
       !studentData.course ||
       !studentData.address ||
-      !studentData.phone||
+      !studentData.phone ||
       !studentData.image
     ) {
-      toastr.error('Please fill in all fields.');
+      toastr.error("Please fill in all fields.");
       return;
     }
 
-            toastr.info('Authenticating...');
-
+    toastr.info("Authenticating...");
 
     if (studentData.cnic.length !== 13 || !/^\d+$/.test(studentData.cnic)) {
-      toastr.error('CNIC number must be 13 digits long.');
+      toastr.error("CNIC number must be 13 digits long.");
       return;
     }
 
     if (studentData.phone.length !== 11 || !/^\d+$/.test(studentData.phone)) {
-      toastr.error('Phone number must be 11 digits long.');
+      toastr.error("Phone number must be 11 digits long.");
       return;
     }
 
@@ -116,17 +108,16 @@ const { data:imagedata, error:imageerror } = await client
       .select("*");
 
     if (error) {
-     toastr.error('Error inserting data:', error.message);
+      toastr.error("Error inserting data:", error.message);
     } else {
       console.log("Data inserted successfully:", data);
-     toastr.success('Data inserted successfully.');
+      toastr.success("Data inserted successfully.");
       form.reset();
     }
   });
 }
 
 // ---------------------chcek cnic search -----------------------
-
 
 if (searchButton) {
   searchButton.addEventListener("click", async function (event) {
@@ -135,48 +126,41 @@ if (searchButton) {
     console.log("Searching for CNIC Number:", checkcnic);
 
     // downloadButton.style.display = "none";
-        
 
-            toastr.info('Authenticating...');
-
+    toastr.info("Authenticating...");
 
     const { data, error } = await client
       .from("student_form")
       .select()
       .eq("cnic", checkcnic);
- 
-        if (data.length === 0) {
-        toastr.error('No data found for the provided CNIC number.');
-        return
-      }
+
+    if (data.length === 0) {
+      toastr.error("No data found for the provided CNIC number.");
+      return;
+    }
 
     if (error) {
-      toastr.error('Error fetching data:', error.message);
+      toastr.error("Error fetching data:", error.message);
     } else {
       console.log("Data fetched successfully:", data);
       tablecontainer.style.display = "block";
 
       // downloadButton.style.display = "none";
-  
 
-
-
-    
       studentList.innerHTML = "";
       for (let i = 0; i < data.length; i++) {
-
         const imageFilename = data[i].image;
         console.log(imageFilename);
-        
 
-    const { data: imageUrlData } = client.storage
-      .from('profileimg')
-      .getPublicUrl(`public/${imageFilename}`);
-
+        const { data: imageUrlData } = client.storage
+          .from("profileimg")
+          .getPublicUrl(`public/${imageFilename}`);
 
         studentList.innerHTML = `
         <tr>
-        <td ><img src=${imageUrlData.publicUrl} class="profile-image" alt="Profile Image" width="50"  height="50" /></td>
+        <td ><img src=${
+          imageUrlData.publicUrl
+        } class="profile-image" alt="Profile Image" width="50"  height="50" /></td>
         <td>${
           data[i].name.charAt(0).toUpperCase() +
           data[i].name.slice(1).toLowerCase()
@@ -190,7 +174,7 @@ if (searchButton) {
         <td>${data[i].cnic}</td>
         <td>${data[i].status}</td>
         <td>
-        ${downloadbuttoncelhtml(data[i].status , data[i].roll)}
+        ${downloadbuttoncelhtml(data[i].status, data[i].roll)}
         </td>
        
         </tr>
@@ -200,20 +184,16 @@ if (searchButton) {
   });
 }
 
-
-
 // ----------------------DOWONLOAD BUTTON CREATE ----------------------
 
-function downloadbuttoncelhtml(status , roll) {
-  if (status === 'active' ) {
+function downloadbuttoncelhtml(status, roll) {
+  if (status === "active") {
     // console.log(roll);
-   return ` <button onclick="downloadIdCard('${roll}')" class="search-btn" >Download Id Card</button> `
-   
-  }else{
-      return ` <span>your id card is  ${status}</span>`
+    return ` <button onclick="downloadIdCard('${roll}')" class="search-btn" >Download Id Card</button> `;
+  } else {
+    return ` <span>your id card is  ${status}</span>`;
   }
 }
-
 
 // ------------------------Download Id Card -----------------------
 
@@ -249,7 +229,7 @@ async function downloadIdCard(roll) {
   doc.setFont("helvetica", "bold");
   doc.text("SMIT MASS IT TRAINING", 42.5, 12, { align: "center" });
 
-    const imageFilename = student.image;
+  const imageFilename = student.image;
   const { data: imageUrlData } = client.storage
     .from("profileimg")
     .getPublicUrl(`public/${imageFilename}`);
@@ -287,9 +267,6 @@ async function downloadIdCard(roll) {
   doc.save(`student_${roll}.pdf`);
 }
 
-
-
-
 // -------------------------admin login------------------
 
 if (adminLoginForm) {
@@ -298,8 +275,6 @@ if (adminLoginForm) {
     let adminemailValue = adminemail.value;
     let adminPasswordValue = adminpassword.value;
 
-      
-
     console.log(
       "Admin Name:",
       adminemailValue + ", Admin Password:",
@@ -307,12 +282,12 @@ if (adminLoginForm) {
     );
 
     if (adminemailValue === "" || adminPasswordValue === "") {
-      toastr.error('Please fill in all fields.');
+      toastr.error("Please fill in all fields.");
       return;
     }
 
-      // Simulate login process
-            toastr.info('Authenticating...');
+    // Simulate login process
+    toastr.info("Authenticating...");
 
     const { data, error } = await client.auth.signInWithPassword({
       email: adminemailValue,
@@ -321,22 +296,16 @@ if (adminLoginForm) {
 
     if (error) {
       console.log("Error logging in:", error.message);
-      toastr.error('Login failed. Please check your credentials.');
+      toastr.error("Login failed. Please check your credentials.");
     } else {
       console.log("Login successful:", data);
- toastr.success('Login successful.');
- setTimeout(() => {
-  
-   window.location.href = "admin.html";
- }, 1000);
+      toastr.success("Login successful.");
+      setTimeout(() => {
+        window.location.href = "admin.html";
+      }, 1000);
     }
   });
-
-  
 }
-
-
-
 
 // ------------------------ Admin Table Function -----------------------
 async function admintableshow() {
@@ -346,7 +315,7 @@ async function admintableshow() {
   const { data, error } = await client.from("student_form").select("*");
 
   if (error) {
-    toastr.error('Something went wrong!');
+    toastr.error("Something went wrong!");
   } else {
     console.log("Data fetched successfully:", data);
     adminStudentList.innerHTML = "";
@@ -354,12 +323,9 @@ async function admintableshow() {
       studentcount.innerHTML = data.length;
       if (data[i].status === "active") {
         activecountnu++;
-        
-        
       }
 
       activecount.innerHTML = activecountnu;
-      
 
       adminStudentList.innerHTML += `
         <tr id='row-${data[i].roll}'>
@@ -379,9 +345,15 @@ async function admintableshow() {
     <select class="status-select" onchange="updateStatus('${
       data[i].roll
     }', this.value)" >
-    <option value="pending" ${data[i].status === 'pending' ? 'selected' : ''} >Pending</option>
-      <option value="active" ${data[i].status === 'active' ? 'selected' : ''} >Active</option>
-      <option value="inactive" ${data[i].status === 'inactive' ? 'selected' : ''}>Inactive</option>
+    <option value="pending" ${
+      data[i].status === "pending" ? "selected" : ""
+    } >Pending</option>
+      <option value="active" ${
+        data[i].status === "active" ? "selected" : ""
+      } >Active</option>
+      <option value="inactive" ${
+        data[i].status === "inactive" ? "selected" : ""
+      }>Inactive</option>
     </select>
   </td>
   <td><button class="delete-button" onclick="deleteRow('${
@@ -390,7 +362,9 @@ async function admintableshow() {
 
   
 
-  <td><button class="edit-button" onclick="editRow('${data[i].roll}')">Edit</button></td>
+  <td><button class="edit-button" onclick="editRow('${
+    data[i].roll
+  }')">Edit</button></td>
 
   
         </tr>
@@ -398,7 +372,7 @@ async function admintableshow() {
     }
   }
 }
-admintableshow()
+admintableshow();
 
 // ------------------------ Logout Function -----------------------
 async function logoutshow() {
@@ -406,14 +380,13 @@ async function logoutshow() {
 
   if (error) {
     console.log("Error logging out:", error.message);
-   toastr.error('Error logging out:', error.message);
+    toastr.error("Error logging out:", error.message);
   } else {
     console.log("Logout successful");
- toastr.success('Logout successful.');
- setTimeout(() => {
-  
-   window.location.href = "adminlogin.html";
- }, 1000);
+    toastr.success("Logout successful.");
+    setTimeout(() => {
+      window.location.href = "adminlogin.html";
+    }, 1000);
   }
 }
 
@@ -427,115 +400,109 @@ async function updateStatus(roll, status) {
     .eq("roll", roll);
   if (error) {
     console.log("Error updating status:", error.message);
-    toastr.error('Error updating status:', error.message);
+    toastr.error("Error updating status:", error.message);
   } else {
     console.log("Status updated successfully for roll:", roll);
-  toastr.success('Message sent successfully!');
+    toastr.success("Message sent successfully!");
   }
 
   admintableshow();
 }
 
-// -------------------------------------- Delete Row Function ----------------------- 
+// -------------------------------------- Delete Row Function -----------------------
 async function deleteRow(id) {
   let row = document.getElementById(`row-${id}`);
 
   const { error } = await client.from("student_form").delete().eq("roll", id);
 
   if (error) {
-    toastr.error('Error deleting row:', error.message);
+    toastr.error("Error deleting row:", error.message);
   } else {
     console.log("Row deleted successfully with ID:", id);
     if (row) {
       row.remove();
-      toastr.success('Row deleted successfully!');
+      toastr.success("Row deleted successfully!");
     }
   }
 }
 
 // -----------------------Edit Row Function -----------------------
-async function editRow(id) {
-  console.log("Editing row with ID:", id);
+function editRow(roll) {
+  console.log("Editing row with Roll:", roll);
 
-  let row = document.getElementById(`row-${id}`);
-  let tds = row.getElementsByTagName('td');
-  let editbutton = row.querySelector('.edit-button');
+  let row = document.getElementById(`row-${roll}`);
+  let tds = row.getElementsByTagName("td");
+  document.getElementById("editName").value = tds[0].innerText;
+  document.getElementById("editFatherName").value = tds[1].innerText;
+  document.getElementById("editAge").value = tds[2].innerText;
+  document.getElementById("editCnic").value = tds[4].innerText;
 
-  if (editbutton.textContent === 'Edit') {
+  closePopup.addEventListener("click", function () {
+    openPopup.style.display = "none";
+  });
 
-    let name = tds[0].innerText;
-    let fathername = tds[1].innerText;
-    let age = tds[2].innerText;
-    let cnic = tds[4].innerText;
+  openPopup.style.display = "flex";
 
-    tds[0].innerHTML = `<input type="text" id="name-${id}" value="${name}">`;
-    tds[1].innerHTML = `<input type="text" id="fathername-${id}" value="${fathername}">`;
-    tds[2].innerHTML = `<input type="number" id="age-${id}" value="${age}">`;
-    tds[4].innerHTML = `<input type="text" id="cnic-${id}" value="${cnic}">`;
+  updateButton.addEventListener("click", async function () {
+    let newdata = {
+      name: document.getElementById("editName").value,
+      fatherName: document.getElementById("editFatherName").value,
+      age: document.getElementById("editAge").value,
+      cnic: document.getElementById("editCnic").value,
+    };
 
-    editbutton.textContent = 'Update';
-  } else {
- 
+    if (!newdata.name || !newdata.fatherName || !newdata.age || !newdata.cnic) {
+      toastr.error("Please fill in all the fields.");
+      return;
+    }
+
+    showTableLoader();
     const { error } = await client
-      .from('student_form')
-      .update({
-        name: document.getElementById(`name-${id}`).value,
-        fatherName: document.getElementById(`fathername-${id}`).value,
-        age: document.getElementById(`age-${id}`).value,
-        cnic: document.getElementById(`cnic-${id}`).value
-      })
-      .eq('roll', id)
+      .from("student_form")
+      .update(newdata)
+      .eq("roll", roll)
+      .order("roll", { ascending: false });
 
-    editbutton.textContent = 'Edit';
+    hideTableLoader();
 
     if (error) {
-      // console.log("Error updating row:", error.message);
-      toastr.error('Update failed:', error.message);
+      toastr.error("Update failed:", error.message);
     } else {
-      // console.log("Row updated successfully with ID:", id);
-      toastr.success('data updated successfully!');
-      admintableshow(); 
+      toastr.success("data updated successfully!");
+      admintableshow();
+      openPopup.style.display = "none";
     }
-  }
+  });
 }
-
-
-
 
 // ------------------------ filter Active Users -----------------------------------------
 
 let activeusers = document.getElementById("activeusers");
 if (activeusers) {
-activeusers.addEventListener('change', async function() {
-    
+  activeusers.addEventListener("change", async function () {
     let filtervalue = activeusers.value;
     // console.log("Active users filter changed to:", filtervalue);
-    
+
     let query = client.from("student_form").select("*");
 
+    if (filtervalue === "active") {
+      query = query.eq("status", "active");
+    } else if (filtervalue === "inactive") {
+      query = query.eq("status", "inactive");
+    } else {
+      query = query;
+    }
 
-
-     if (filtervalue === 'active') {
-        query = query.eq("status", "active");
-     } else if (filtervalue === 'inactive') {
-        query = query.eq("status", "inactive");
-       
-        
-     }else {
-        query = query; 
-     }
-
-    const { data, error } = await query;    
+    const { data, error } = await query;
 
     if (error) {
-        console.log("Error fetching data:", error.message);
-        
-    }else{
-        console.log("Data fetched successfully:", data);
-        adminStudentList.innerHTML = "";
+      console.log("Error fetching data:", error.message);
+    } else {
+      console.log("Data fetched successfully:", data);
+      adminStudentList.innerHTML = "";
 
-        for (let i = 0; i < data.length; i++) {
-             adminStudentList.innerHTML += `
+      for (let i = 0; i < data.length; i++) {
+        adminStudentList.innerHTML += `
         <tr id='row-${data[i].roll}'>
         <td>${
           data[i].name.charAt(0).toUpperCase() +
@@ -550,73 +517,81 @@ activeusers.addEventListener('change', async function() {
         <td>${data[i].cnic}</td>
         <td>${data[i].status}</td>
         <td class="actions-cell">
-    <select class="status-select" onchange="updateStatus('${data[i].roll}', this.value)" >
-    <option value="pending" ${data[i].status === "pending" ? "selected" : ""} >Pending</option>
-      <option value="active" ${data[i].status === "active" ? "selected" : ""} >Active</option>
-      <option value="inactive" ${data[i].status === "inactive" ? "selected" : ""}>Inactive</option>
+    <select class="status-select" onchange="updateStatus('${
+      data[i].roll
+    }', this.value)" >
+    <option value="pending" ${
+      data[i].status === "pending" ? "selected" : ""
+    } >Pending</option>
+      <option value="active" ${
+        data[i].status === "active" ? "selected" : ""
+      } >Active</option>
+      <option value="inactive" ${
+        data[i].status === "inactive" ? "selected" : ""
+      }>Inactive</option>
     </select>
     </td>
-    <td><button class="delete-button" onclick="deleteRow('${data[i].roll}')">Delete</button></td>
-  <td><button class="edit-button" onclick="editRow('${data[i].roll}')">Edit</button></td>
+    <td><button class="delete-button" onclick="deleteRow('${
+      data[i].roll
+    }')">Delete</button></td>
+  <td><button class="edit-button" onclick="editRow('${
+    data[i].roll
+  }')">Edit</button></td>
 
         </tr>
-    `            
-        }
-        
+    `;
+      }
     }
-
-
-})
+  });
 }
-
 
 // --------------------- Logout Function ridirect-------------------------
 async function redirect() {
-  const { data: { session }, error } = await client.auth.getSession();
+  const {
+    data: { session },
+    error,
+  } = await client.auth.getSession();
 
   if (!session) {
     if (window.location.pathname.includes("admin.html")) {
       window.location.href = "adminlogin.html";
     }
-  }else{
+  } else {
     console.log(error);
-    
   }
 }
 redirect();
 
-
 // ------------------------ Download Report -----------------------
 
-downloadReport.addEventListener('click', async function() {
- console.log( "Download Report button clicked");
+downloadReport.addEventListener("click", async function () {
+  console.log("Download Report button clicked");
 
- let table = document.getElementById('adminTable')
+  let table = document.getElementById("adminTable");
 
- let workbook = XLSX.utils.table_to_book(table, { sheet: "student Data" });
+  let workbook = XLSX.utils.table_to_book(table, { sheet: "student Data" });
   XLSX.writeFile(workbook, "admin_table.xlsx");
-  
+});
 
-})
-
-
-searchInput.addEventListener('input' , async function () {
+searchInput.addEventListener("input", async function () {
   console.log("Search input changed:", searchInput.value);
   let filtervalue = searchInput.value;
   console.log("Filter value:", filtervalue);
-  
-   const { data, error } = await client.from("student_form").select("*");
-  
-   let filterdata = data.filter(function (item) {
-    return item.name.toLowerCase().includes(filtervalue.toLowerCase()) 
-    ||String(item.cnic).includes(filtervalue)
-   })
-   adminStudentList.innerHTML = ''
 
-   for (let i = 0; i < filterdata.length; i++) {
-        // console.log(filterdata[i]);
+  const { data, error } = await client.from("student_form").select("*");
 
-        adminStudentList.innerHTML += `
+  let filterdata = data.filter(function (item) {
+    return (
+      item.name.toLowerCase().includes(filtervalue.toLowerCase()) ||
+      String(item.cnic).includes(filtervalue)
+    );
+  });
+  adminStudentList.innerHTML = "";
+
+  for (let i = 0; i < filterdata.length; i++) {
+    // console.log(filterdata[i]);
+
+    adminStudentList.innerHTML += `
         <tr id='row-${filterdata[i].roll}'>
         <td>${
           filterdata[i].name.charAt(0).toUpperCase() +
@@ -631,23 +606,38 @@ searchInput.addEventListener('input' , async function () {
         <td>${filterdata[i].cnic}</td>
         <td>${filterdata[i].status}</td>
         <td class="actions-cell">
-    <select class="status-select" onchange="updateStatus('${filterdata[i].roll}', this.value)" >
-    <option value="pending" ${filterdata[i].status === "pending" ? "selected" : ""} >Pending</option>
-      <option value="active" ${filterdata[i].status === "active" ? "selected" : ""} >Active</option>
-      <option value="inactive" ${filterdata[i].status === "inactive" ? "selected" : ""}>Inactive</option>
+    <select class="status-select" onchange="updateStatus('${
+      filterdata[i].roll
+    }', this.value)" >
+    <option value="pending" ${
+      filterdata[i].status === "pending" ? "selected" : ""
+    } >Pending</option>
+      <option value="active" ${
+        filterdata[i].status === "active" ? "selected" : ""
+      } >Active</option>
+      <option value="inactive" ${
+        filterdata[i].status === "inactive" ? "selected" : ""
+      }>Inactive</option>
     </select>
     </td>
-    <td><button class="delete-button" onclick="deleteRow('${filterdata[i].roll}')">Delete</button></td>
-  <td><button class="edit-button" onclick="editRow('${filterdata[i].roll}')">Edit</button></td>
+    <td><button class="delete-button" onclick="deleteRow('${
+      filterdata[i].roll
+    }')">Delete</button></td>
+  <td><button class="edit-button" onclick="editRow('${
+    filterdata[i].roll
+  }')">Edit</button></td>
 
         </tr>
-    `        
+    `;
+  }
 
+  // console.log(filterdata);
+});
 
-            
-   }
+function showTableLoader() {
+  loaderRow.style.display = "table-row";
+}
 
-    // console.log(filterdata);
-    
-  
-})
+function hideTableLoader() {
+  loaderRow.style.display = "none";
+}

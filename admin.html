@@ -68,13 +68,47 @@
                     </tr>
                 </thead>
                 <tbody id="adminStudentList">
+                  <tr id="loaderRow">
+        <td colspan="9" style="text-align:center; padding: 20px;">
+            <div class="spinner" style="
+                width: 40px;
+                height: 40px;
+                border: 6px solid #f3f3f3;
+                border-top: 6px solid #3498db;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin: auto;
+            "></div>
+        </td>
+    </tr>    
                     <!-- Example row -->
                 </tbody>
+                
             </table>
         </div>
     </div>
 
 </div>
+
+ <div id="openPopup" class="overlay">
+    <div class="popup">
+        <!-- <button > -->
+
+            <i id="closePopup"  class="fas fa-times " ></i>
+        <!-- </button> -->
+      <h3>Edit Student </h3>
+      <form >
+       <input type="text" id="editName" placeholder="Name" required>
+    <input type="text" id="editFatherName" placeholder="Father Name" required>
+    <input type="number" id="editAge" placeholder="Age" required>
+    <input type="text" id="editCnic" placeholder="CNIC" required>
+      </form>
+      <button id="updateButton" class="edit-button">Update</button>
+    </div>
+  </div>
+
+
+
 
 
 
