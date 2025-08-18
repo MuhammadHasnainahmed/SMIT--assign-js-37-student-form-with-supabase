@@ -38,7 +38,7 @@ let rollnumber = Math.floor(Math.random() * 1000000)
 
 // ------------------------ student form ----------------------
 if (form) {
-  roll.textContent = `your roll number is: ${rollnumber}`;
+
 
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -318,7 +318,7 @@ async function admintableshow() {
     toastr.error("Something went wrong!");
   } else {
     console.log("Data fetched successfully:", data);
-    adminStudentList.innerHTML = "";
+    adminStudentList.innerHTML = " ";
     for (let i = 0; i < data.length; i++) {
       studentcount.innerHTML = data.length;
       if (data[i].status === "active") {
