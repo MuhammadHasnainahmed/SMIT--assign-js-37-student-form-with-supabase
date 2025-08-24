@@ -70,6 +70,8 @@ if (form) {
       gender: document.getElementById("gender").value,
       course: document.getElementById("Course").value,
       address: document.getElementById("address").value,
+      campus: document.getElementById("Campus").value,
+      country: document.getElementById("Country").value,
       phone: document.getElementById("phone").value,
       image: filename,
     };
@@ -84,7 +86,9 @@ if (form) {
       !studentData.course ||
       !studentData.address ||
       !studentData.phone ||
-      !studentData.image
+      !studentData.image ||
+      !studentData.campus ||
+      !studentData.country
     ) {
       toastr.error("Please fill in all fields.");
       return;
@@ -172,6 +176,9 @@ if (searchButton) {
         <td>${data[i].age}</td>
         <td>${data[i].roll}</td>
         <td>${data[i].cnic}</td>
+        <td>${data[i].course}</td>
+        <td>${data[i].campus}</td>
+        <td>${data[i].country}</td>
         <td>${data[i].status}</td>
         <td>
         ${downloadbuttoncelhtml(data[i].status, data[i].roll)}
@@ -340,6 +347,9 @@ async function admintableshow() {
         <td>${data[i].age}</td>
         <td>${data[i].roll}</td>
         <td>${data[i].cnic}</td>
+        <td>${data[i].campus}</td>
+        <td>${data[i].country}</td>
+        <td>${data[i].course}</td>
         <td>${data[i].status}</td>
         <td class="actions-cell">
     <select class="status-select" onchange="updateStatus('${
@@ -427,6 +437,7 @@ async function deleteRow(id) {
 }
 
 // -----------------------Edit Row Function -----------------------
+let currentEditingRoll = null;
 function editRow(roll) {
   console.log("Editing row with Roll:", roll);
 
@@ -441,6 +452,8 @@ function editRow(roll) {
     openPopup.style.display = "none";
   });
 
+  currentEditingRoll = roll;
+
   openPopup.style.display = "flex";
 
   updateButton.addEventListener("click", async function () {
@@ -451,6 +464,10 @@ function editRow(roll) {
       cnic: document.getElementById("editCnic").value,
     };
 
+    console.log("Updating data for Roll:", currentEditingRoll, document.getElementById("editName").value);
+
+    
+
     if (!newdata.name || !newdata.fatherName || !newdata.age || !newdata.cnic) {
       toastr.error("Please fill in all the fields.");
       return;
@@ -460,7 +477,7 @@ function editRow(roll) {
     const { error } = await client
       .from("student_form")
       .update(newdata)
-      .eq("roll", roll)
+      .eq("roll", currentEditingRoll)
       .order("roll", { ascending: false });
 
     hideTableLoader();
@@ -471,6 +488,7 @@ function editRow(roll) {
       toastr.success("data updated successfully!");
       admintableshow();
       openPopup.style.display = "none";
+      currentEditingRoll = null;
     }
   });
 }
@@ -515,6 +533,9 @@ if (activeusers) {
         <td>${data[i].age}</td>
         <td>${data[i].roll}</td>
         <td>${data[i].cnic}</td>
+        <td>${data[i].campus}</td>
+        <td>${data[i].country}</td>
+        <td>${data[i].course}</td>
         <td>${data[i].status}</td>
         <td class="actions-cell">
     <select class="status-select" onchange="updateStatus('${
@@ -604,6 +625,8 @@ searchInput.addEventListener("input", async function () {
         <td>${filterdata[i].age}</td>
         <td>${filterdata[i].roll}</td>
         <td>${filterdata[i].cnic}</td>
+        <td>${filterdata[i].campus}</td>
+        <td>${filterdata[i].country}</td>
         <td>${filterdata[i].status}</td>
         <td class="actions-cell">
     <select class="status-select" onchange="updateStatus('${
@@ -641,3 +664,85 @@ function showTableLoader() {
 function hideTableLoader() {
   loaderRow.style.display = "none";
 }
+
+
+let countryFilter = document.getElementById("countryFilter");
+if (countryFilter) {
+ countryFilter.addEventListener("change", async function () {
+ 
+  console.log("Country filter changed to:", countryFilter.value);
+
+const { data, error } = await client
+.from("student_form")
+.select("*")
+
+if (error) {
+  console.log("Error fetching data:", error.message);
+  
+}else{
+  console.log("Data fetched successfully:", data);
+  let filterdata = data.filter(function (item) {
+     return item.country === countryFilter.value || countryFilter.value === "all";
+     
+  })
+
+  console.log(filterdata);
+  
+
+  adminStudentList.innerHTML = "";
+ 
+
+    for (let i = 0; i < filterdata.length; i++) {
+      adminStudentList.innerHTML += `
+        <tr id='row-${filterdata[i].roll}'>
+        <td>${
+          filterdata[i].name.charAt(0).toUpperCase() +
+          filterdata[i].name.slice(1).toLowerCase()
+        }</td>
+        <td>${
+          filterdata[i].fatherName.charAt(0).toUpperCase() +
+          filterdata[i].fatherName.slice(1).toLowerCase()
+        }</td>
+        <td>${filterdata[i].age}</td>
+        <td>${filterdata[i].roll}</td>
+        <td>${filterdata[i].cnic}</td>
+        <td>${filterdata[i].campus}</td>
+        <td>${filterdata[i].country}</td>
+        <td>${filterdata[i].course}</td>
+        <td>${filterdata[i].status}</td>
+        <td class="actions-cell">
+    <select class="status-select" onchange="updateStatus('${
+      filterdata[i].roll
+    }', this.value)" >
+    <option value="pending" ${
+      filterdata[i].status === "pending" ? "selected" : ""
+    } >Pending</option>
+      <option value="active" ${
+        filterdata[i].status === "active" ? "selected" : ""
+      } >Active</option>
+      <option value="inactive" ${
+        filterdata[i].status === "inactive" ? "selected" : ""
+      }>Inactive</option>
+    </select>
+    </td>
+    <td><button class="delete-button" onclick="deleteRow('${
+      filterdata[i].roll
+    }')">Delete</button></td>
+  <td><button class="edit-button" onclick="editRow('${
+    filterdata[i].roll
+  }')">Edit</button></td>
+
+        </tr>
+    `;
+    }
+}
+  
+  
+
+
+})
+
+
+}
+
+
