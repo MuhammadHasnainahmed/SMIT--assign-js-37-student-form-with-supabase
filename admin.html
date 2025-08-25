@@ -14,16 +14,9 @@
 
 
 
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <h2>Admin Panel</h2>
-        <ul>
-            <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li><a href="#"><i class="fas fa-users"></i> Students</a></li>
-            <li><a href="#"><i class="fas fa-user-tie"></i> Admins</a></li>
-            <li onclick="logoutshow()"><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-        </ul>
-    </div>
+    <!-- Yaha sidebar load hoga -->
+  <div id="sidebar-container"></div>
+    
 
     <!-- Main Content -->
     <div class="main-content">
@@ -57,8 +50,8 @@
                         <option value="active">Active Students</option>
                         <option value="inactive">Inactive Students</option>
                     </select>
-                    <select name="campus" id="countryFilter">
-                        <option value="all">All Campuses</option>
+                    <select name="city" id="cityFilter">
+                        <option value="all">All City</option>
                         <option value="Karachi">Karachi</option>
                         <option value="Lahore">Lahore</option>
                         <option value="Islamabad">Islamabad</option>
@@ -78,7 +71,7 @@
                             <th>Roll Number</th>
                             <th>CNIC</th>
                             <th>Campus</th>
-                            <th>Country</th>
+                            <th>City</th>
                             <th>Course</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -113,6 +106,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+   <script>
+    // Sidebar.html ko load karo
+    fetch("sidebar.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("sidebar-container").innerHTML = data;
+      });
+  </script>
+
     <script src="app.js"></script>
 </body>
 

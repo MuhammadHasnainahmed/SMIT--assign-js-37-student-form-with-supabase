@@ -71,7 +71,7 @@ if (form) {
       course: document.getElementById("Course").value,
       address: document.getElementById("address").value,
       campus: document.getElementById("Campus").value,
-      country: document.getElementById("Country").value,
+      city: document.getElementById("city").value,
       phone: document.getElementById("phone").value,
       image: filename,
     };
@@ -88,7 +88,7 @@ if (form) {
       !studentData.phone ||
       !studentData.image ||
       !studentData.campus ||
-      !studentData.country
+      !studentData.city
     ) {
       toastr.error("Please fill in all fields.");
       return;
@@ -178,7 +178,7 @@ if (searchButton) {
         <td>${data[i].cnic}</td>
         <td>${data[i].course}</td>
         <td>${data[i].campus}</td>
-        <td>${data[i].country}</td>
+        <td>${data[i].city}</td>
         <td>${data[i].status}</td>
         <td>
         ${downloadbuttoncelhtml(data[i].status, data[i].roll)}
@@ -348,7 +348,7 @@ async function admintableshow() {
         <td>${data[i].roll}</td>
         <td>${data[i].cnic}</td>
         <td>${data[i].campus}</td>
-        <td>${data[i].country}</td>
+        <td>${data[i].city}</td>
         <td>${data[i].course}</td>
         <td>${data[i].status}</td>
         <td class="actions-cell">
@@ -534,7 +534,7 @@ if (activeusers) {
         <td>${data[i].roll}</td>
         <td>${data[i].cnic}</td>
         <td>${data[i].campus}</td>
-        <td>${data[i].country}</td>
+        <td>${data[i].city}</td>
         <td>${data[i].course}</td>
         <td>${data[i].status}</td>
         <td class="actions-cell">
@@ -626,7 +626,7 @@ searchInput.addEventListener("input", async function () {
         <td>${filterdata[i].roll}</td>
         <td>${filterdata[i].cnic}</td>
         <td>${filterdata[i].campus}</td>
-        <td>${filterdata[i].country}</td>
+        <td>${filterdata[i].city}</td>
         <td>${filterdata[i].course}</td>
         <td>${filterdata[i].status}</td>
         <td class="actions-cell">
@@ -667,11 +667,11 @@ function hideTableLoader() {
 }
 
 
-let countryFilter = document.getElementById("countryFilter");
-if (countryFilter) {
- countryFilter.addEventListener("change", async function () {
+let cityFilter = document.getElementById("cityFilter");
+if (cityFilter) {
+ cityFilter.addEventListener("change", async function () {
  
-  console.log("Country filter changed to:", countryFilter.value);
+  console.log("Country filter changed to:", cityFilter.value);
 
 const { data, error } = await client
 .from("student_form")
@@ -683,7 +683,7 @@ if (error) {
 }else{
   console.log("Data fetched successfully:", data);
   let filterdata = data.filter(function (item) {
-     return item.country === countryFilter.value || countryFilter.value === "all";
+     return item.city === cityFilter.value || cityFilter.value === "all";
      
   })
 
@@ -708,7 +708,7 @@ if (error) {
         <td>${filterdata[i].roll}</td>
         <td>${filterdata[i].cnic}</td>
         <td>${filterdata[i].campus}</td>
-        <td>${filterdata[i].country}</td>
+        <td>${filterdata[i].city}</td>
         <td>${filterdata[i].course}</td>
         <td>${filterdata[i].status}</td>
         <td class="actions-cell">

@@ -347,7 +347,8 @@
 
         /* Table Container Styles */
         .table-container {
-            max-width: 1200px;
+            max-width: 1300px;
+            overflow-x: scroll;
             margin: 40px auto;
             background-color: white;
             padding: 30px;
