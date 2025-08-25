@@ -627,6 +627,7 @@ searchInput.addEventListener("input", async function () {
         <td>${filterdata[i].cnic}</td>
         <td>${filterdata[i].campus}</td>
         <td>${filterdata[i].country}</td>
+        <td>${filterdata[i].course}</td>
         <td>${filterdata[i].status}</td>
         <td class="actions-cell">
     <select class="status-select" onchange="updateStatus('${
