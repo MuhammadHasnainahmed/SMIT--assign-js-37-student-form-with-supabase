@@ -29,6 +29,14 @@ let updateButton = document.getElementById("updateButton");
 let loaderRow = document.getElementById("loaderRow");
 let closePopup = document.getElementById("closePopup");
 
+
+// superadmin add
+
+
+let addadminbutton = document.getElementById('addadmin');
+    let adminaddtable = document.getElementById("adminaddtable"); 
+
+
 // let profilepicture = document.getElementById('file');
 
 let rollnumber = Math.floor(Math.random() * 1000000)
@@ -315,6 +323,8 @@ if (adminLoginForm) {
 }
 
 // ------------------------ Admin Table Function -----------------------
+if (adminStudentList) {
+  
 async function admintableshow() {
   let activecountnu = 0;
   // admintablecontainer.style.display = "block";
@@ -325,7 +335,7 @@ async function admintableshow() {
     toastr.error("Something went wrong!");
   } else {
     console.log("Data fetched successfully:", data);
-    adminStudentList.innerHTML = " ";
+   adminStudentList.innerHTML = "";
     for (let i = 0; i < data.length; i++) {
       studentcount.innerHTML = data.length;
       if (data[i].status === "active") {
@@ -383,6 +393,7 @@ async function admintableshow() {
   }
 }
 admintableshow();
+}
 
 // ------------------------ Logout Function -----------------------
 async function logoutshow() {
@@ -584,16 +595,25 @@ async function redirect() {
 redirect();
 
 // ------------------------ Download Report -----------------------
+if(window.location.pathname === '/admin.html') {
 
 downloadReport.addEventListener("click", async function () {
   console.log("Download Report button clicked");
 
   let table = document.getElementById("adminTable");
 
+ 
+
   let workbook = XLSX.utils.table_to_book(table, { sheet: "student Data" });
   XLSX.writeFile(workbook, "admin_table.xlsx");
 });
+}
 
+
+// ------------------------ filter search Users -----------------------------------------
+
+if (searchInput) {
+  
 searchInput.addEventListener("input", async function () {
   console.log("Search input changed:", searchInput.value);
   let filtervalue = searchInput.value;
@@ -657,6 +677,10 @@ searchInput.addEventListener("input", async function () {
 
   // console.log(filterdata);
 });
+}
+
+
+// ------------------------ table loader -----------------------------------------
 
 function showTableLoader() {
   loaderRow.style.display = "table-row";
@@ -665,6 +689,10 @@ function showTableLoader() {
 function hideTableLoader() {
   loaderRow.style.display = "none";
 }
+
+
+
+// ------------------------ filter city Users -----------------------------------------
 
 
 let cityFilter = document.getElementById("cityFilter");
@@ -744,6 +772,97 @@ if (error) {
 })
 
 
+}
+
+
+// ------------------------ superadmin add new admin -----------------------------------------
+async function addAdmin() {
+  console.log("Add Admin button clicked");
+
+  let adminaddname = document.getElementById('adminaddname');
+  let adminaddemail = document.getElementById('adminaddemail');
+  let adminaddpassword = document.getElementById('adminaddpassword');
+  let adminaddcampus = document.getElementById('adminaddcampus');
+  let adminaddcity = document.getElementById('adminaddcity');
+  let adminaddrole = document.getElementById('adminaddrole');
+
+    const adminData = {
+    adminname: adminaddname.value,
+    adminemail: adminaddemail.value,
+    adminpassword: adminaddpassword.value,
+    admincampus: adminaddcampus.value,
+    admincity: adminaddcity.value,
+    adminrole: adminaddrole.value
+  };
+
+
+
+  const { data: admin, error } = await client
+    .from('admins')  
+    .insert([adminData])
+    // .select('*');
+
+  if (error) {
+    toastr.error("Error inserting data: " + error.message);
+    console.error("Insert error:", error);
+  } else {
+    console.log("Data inserted successfully:", admin);
+    toastr.success("Data inserted successfully.");
+  }
+
+  // clear input fields
+  adminaddname.value = "";
+  adminaddemail.value = "";
+  adminaddpassword.value = "";
+  adminaddcampus.value = "";
+  adminaddcity.value = "";
+  adminaddrole.value = "";
+}
+
+
+console.log("Supabase client:", client);
+
+
+// ---------------------adminaddtable--------------------
+if (adminaddtable) {
+  
+  async function getadmin() {
+    const adminaddtable = document.getElementById("adminaddtable"); // 👈 yahan lelo
+
+    const { data, error } = await client.from("admins").select("*");
+
+    if (error) {
+      console.error("❌ Supabase error:", error.message);
+      return;
+    }
+
+    console.log("✅ Supabase data:", data);
+
+    if (!adminaddtable) {
+      toastr.error("adminaddtable element not found in DOM!");
+      return;
+    }
+
+    adminaddtable.innerHTML = ""; // clear table
+
+    data.forEach((row) => {
+      adminaddtable.innerHTML += `
+        <tr>
+          <td>${row.adminname}</td>
+          <td>${row.adminemail}</td>
+          <td>${row.adminpassword}</td>
+          <td>${row.admincity}</td>
+          <td>${row.admincampus}</td>
+          <td>${row.adminrole}</td>
+         <td><button class="delete-button" onclick="deleteRow()">Delete</button></td>
+  <td><button class="edit-button" onclick="editRow()">Edit</button></td>
+        </tr>
+      `;
+    });
+  }
+
+
+  getadmin();
 }
 
 

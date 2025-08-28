@@ -6,7 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin add new</title>
     <link rel="stylesheet" href="admindashb.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 
 <body>
@@ -27,11 +30,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" placeholder="Enter first name">
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" placeholder="Enter last name">
+                    <input type="text" id="adminaddname" placeholder="Enter first name">
                 </div>
             </div>
 
@@ -39,19 +38,28 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Enter email">
+                    <input type="email" id="adminaddemail" placeholder="Enter email">
                 </div>
                 <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="text" id="phone" placeholder="Enter phone number">
+                    <label for="password">Password</label>
+                    <input type="password" id="adminaddpassword" placeholder="Enter password">
                 </div>
             </div>
 
             <!-- Row 3 -->
             <div class="form-row">
                 <div class="form-group">
+                    <label for="city">City</label>
+                    <select id="adminaddcity">
+                        <option>Select City</option>
+                        <option>Karachi</option>
+                        <option>Lahore</option>
+                        <option>Islamabad</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="Campus">Campus</label>
-                    <select id="Campus" name="Campus" required>
+                    <select id="adminaddcampus" name="Campus" required>
                         <option value="">Select Campus</option>
                         <option value="Gulsan">Gulsan</option>
                         <option value="Defence"> Defence view Phase 2</option>
@@ -61,22 +69,14 @@
 
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="city">City</label>
-                    <select id="city">
-                        <option>Select City</option>
-                        <option>Karachi</option>
-                        <option>Lahore</option>
-                        <option>Islamabad</option>
-                    </select>
-                </div>
+
             </div>
 
             <!-- Row 4 -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="role">Role</label>
-                    <select id="role">
+                    <select id="adminaddrole">
                         <option>Super Admin</option>
                         <option>Admin</option>
                     </select>
@@ -84,13 +84,48 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit">Add Admin</button>
+                <button onclick="addAdmin()">Add Admin</button>
             </div>
+        </div>
+
+        <div class="admintablecontainer">
+            <table>
+                <thead>
+
+                    <tr>
+                        <th>Admin Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>City</th>
+                        <th>Campus</th>
+                        <th>Role</th>
+                        <th>Delete</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="adminaddtable">
+                        <tr id="loaderRow">
+                    <td colspan="8" style="text-align:center; padding: 20px;">
+                        <div class="spinner"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
 
 
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
         fetch("sidebar.html")
@@ -99,7 +134,7 @@
                 document.getElementById("sidebar-container").innerHTML = data;
             });
     </script>
-
+    <script src="app.js"></script>
 
 </body>
 
