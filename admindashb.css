@@ -89,6 +89,10 @@ body {
     transform: translateX(-100%);
 }
 
+#adminMenu{
+    display: none;
+}
+
 
 .content-header h1{
     color: #0066b3;

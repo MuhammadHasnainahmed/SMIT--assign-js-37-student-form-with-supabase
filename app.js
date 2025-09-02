@@ -30,6 +30,9 @@ let loaderRow = document.getElementById("loaderRow");
 let closePopup = document.getElementById("closePopup");
 
 
+
+
+
 // superadmin add
 
 
@@ -334,7 +337,7 @@ async function admintableshow() {
   if (error) {
     toastr.error("Something went wrong!");
   } else {
-    console.log("Data fetched successfully:", data);
+    // console.log("Data fetched successfully:", data);
    adminStudentList.innerHTML = "";
     for (let i = 0; i < data.length; i++) {
       studentcount.innerHTML = data.length;
@@ -699,7 +702,7 @@ let cityFilter = document.getElementById("cityFilter");
 if (cityFilter) {
  cityFilter.addEventListener("change", async function () {
  
-  console.log("Country filter changed to:", cityFilter.value);
+  // console.log("Country filter changed to:", cityFilter.value);
 
 const { data, error } = await client
 .from("student_form")
@@ -796,6 +799,25 @@ async function addAdmin() {
   };
 
 
+  const { data:dataauth, error:errorauth } = await client.auth.signUp({
+    email: adminaddemail.value,
+    password: adminaddpassword.value,
+})
+
+if (errorauth) {
+   toastr.error("Error signing up admin: " + errorauth.message);
+   console.error("Sign up error:", errorauth);
+   return;
+}else{
+  toastr.success("Admin signed up successfully.");
+  checkadmincampus();
+  setTimeout(() => {
+    window.location.href = "admin.html";
+  }, 1000);
+  // console.log("Admin signed up successfully:", dataauth);
+}
+
+
 
   const { data: admin, error } = await client
     .from('admins')  
@@ -820,14 +842,26 @@ async function addAdmin() {
 }
 
 
-console.log("Supabase client:", client);
+// console.log("Supabase client:", client);
+
+
+
+// ---------------admin activefilter action button------------------
+
+// function updateStatusadmin() {
+//   console.log(activeusers.value);
+  
+// }
+
+// updateStatusadmin();
+
 
 
 // ---------------------adminaddtable--------------------
 if (adminaddtable) {
   
   async function getadmin() {
-    const adminaddtable = document.getElementById("adminaddtable"); // 👈 yahan lelo
+    const adminaddtable = document.getElementById("adminaddtable"); 
 
     const { data, error } = await client.from("admins").select("*");
 
@@ -836,14 +870,21 @@ if (adminaddtable) {
       return;
     }
 
-    console.log("✅ Supabase data:", data);
+    // console.log("✅ Supabase data:", data);
 
     if (!adminaddtable) {
+      // adminaddtable.innerHTML = <p>adminaddtable element not found</p>
       toastr.error("adminaddtable element not found in DOM!");
       return;
     }
 
-    adminaddtable.innerHTML = ""; // clear table
+
+    if (data.length === 0) {
+      adminaddtable.innerHTML = "<p>No admin data found.</p>";
+      return;
+    }
+
+    adminaddtable.innerHTML = ""; 
 
     data.forEach((row) => {
       adminaddtable.innerHTML += `
@@ -865,4 +906,139 @@ if (adminaddtable) {
   getadmin();
 }
 
+
+// ------------------checkadmincampus-------------------
+
+async function checkadmincampus() {
+  
+  const { data: { user }, error } = await client.auth.getUser()
+  
+  // console.log("user info:", user);
+
+  if (!user) {
+    console.log("Error getting user:", error);
+    return;
+    
+  }
+
+  console.log("user admin" , user);
+  
+
+
+  const {data:admindata , error: adminerror} = await client
+  .from('admins')
+  .select('admincity , admincampus ,adminrole')
+  .eq('adminemail', user.email)
+  .single();
+
+  if (adminerror) {
+    console.log("Error fetching admin data:", adminerror);
+    return;
+  }
+
+
+  // console.log("admindata", admindata);
+
+  // if (admindata.adminrole !== 'superadmin') {
+  //   cityFilter.style.display = "none";
+  //   // adminaddlisticon.style.display = "none";
+
+    
+  // }
+
+  if (admindata.adminrole === 'Superadmin') {
+     document.getElementById("adminMenu").style.display = "block";
+    admintableshow();
+  }else {
+    cityFilter.style.display = "none";
+    // adminaddlisticon.style.display = "none";
+    getstudentbycampus(admindata.admincity , admindata.admincampus);
+  }
+  
+  console.log("admin data:", admindata.adminrole);
+
+  
+}
+
+
+
+// ------------------getstudentbycampus-------------------
+
+async function  getstudentbycampus(city , campus) {
+  const {data , error} = await client
+  .from('student_form')
+  .select('*')
+  .eq('city' , city)
+  .eq('campus' , campus)
+  
+  console.log("getstude", data);
+
+  if (error) {
+    console.log("Error fetching student data by campus:", error);
+    return;
+  }
+
+
+  // cityFilter.style.display = "none";
+
+
+
+
+
+  adminStudentList.innerHTML = "";
+
+  for (let i = 0; i < data.length; i++) {
+     adminStudentList.innerHTML += `
+        <tr id='row-${data[i].roll}'>
+        <td>${
+          data[i].name.charAt(0).toUpperCase() +
+          data[i].name.slice(1).toLowerCase()
+        }</td>
+        <td>${
+          data[i].fatherName.charAt(0).toUpperCase() +
+          data[i].fatherName.slice(1).toLowerCase()
+        }</td>
+        <td>${data[i].age}</td>
+        <td>${data[i].roll}</td>
+        <td>${data[i].cnic}</td>
+        <td>${data[i].campus}</td>
+        <td>${data[i].city}</td>
+        <td>${data[i].course}</td>
+        <td>${data[i].status}</td>
+        <td class="actions-cell">
+    <select class="status-select" onchange="updateStatus('${
+      data[i].roll
+    }', this.value)" >
+    <option value="pending" ${
+      data[i].status === "pending" ? "selected" : ""
+    } >Pending</option>
+      <option value="active" ${
+        data[i].status === "active" ? "selected" : ""
+      } >Active</option>
+      <option value="inactive" ${
+        data[i].status === "inactive" ? "selected" : ""
+      }>Inactive</option>
+    </select>
+  </td>
+  <td><button class="delete-button" >Delete</button></td>
+
+  
+
+  <td><button class="edit-button">Edit</button></td>
+
+  
+        </tr>
+        `;
+    
+      
+    
+  }
+
+
+  
+}
+
+
+
+checkadmincampus();
 
